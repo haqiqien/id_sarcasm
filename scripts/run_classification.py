@@ -681,12 +681,12 @@ def main():
     # get all label classes
     classes = sorted([int(l) for l in label_list])
     weights = (
-        compute_class_weight(class_weight="balanced", classes=classes, y=train_dataset["label"])
+        compute_class_weight(class_weight="balanced", classes=np.array(classes), y=train_dataset["label"])
         * data_args.weight_multiplier
     )
 
     class WeightedTrainer(Trainer):
-        def compute_loss(self, model, inputs, return_outputs=False):
+        def compute_loss(self, model, inputs, return_outputs=False, num_items_in_batch=None):
             labels = inputs.pop("labels")
             outputs = model(**inputs)
             logits = outputs.get("logits")
